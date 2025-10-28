@@ -1,0 +1,36 @@
+name = "vmail"
+main = "worker/src/index.ts"
+
+# 打包配置
+minify = true
+compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2025-03-01"
+keep_vars = true
+
+# 启用 D1 数据库
+[[d1_databases]]
+binding = "DB"
+database_name = "vmail_db"
+database_id = "2a025d81-a5e3-46e5-86bd-8f50b1f1a001"
+# fix: 将迁移目录直接配置在这里，这是 D1 自动迁移的标准做法
+migrations_dir = "worker/drizzle"
+
+# 定义环境变量和密钥
+[vars]
+EMAIL_DOMAIN = "${EMAIL_DOMAIN}"
+TURNSTILE_KEY = "0x4AAAAAAB9CYRjd5koyNCC4"
+COOKIES_SECRET = "114514qwerty"
+TURNSTILE_SECRET = "0x4AAAAAAB9CYRP3MTSF2HwnFZVY_seaOUY"
+
+# 配置邮件处理
+[triggers]
+crons = ["0 * * * *"] # 每小时运行一次清理任务
+
+# 构建配置
+[build]
+command = "pnpm run build"
+
+# 静态资源配置
+[assets]
+binding = "ASSETS"
+directory = "frontend/build/client"
